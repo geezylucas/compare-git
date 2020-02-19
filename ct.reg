@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Directory\shell\Run Batch script]
+@="&Run Batch script"
+"Icon"="%SystemRoot%\\System32\\shell32.dll,71"
+
+[HKEY_CLASSES_ROOT\Directory\shell\Run Batch script\command]
+@="C:\\Python38-32\\python.exe C:\\xxx\\compare-git\\compare\\__main__.py \"%1\""
