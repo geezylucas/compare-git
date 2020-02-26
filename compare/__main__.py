@@ -1,10 +1,30 @@
 import os
 import sys
-from numpy import genfromtxt
+import pandas as pd
+import numpy as np
+from collections import Counter
+from itertools import chain
 
 files = []
-
 path_files = ""
+list_diff_ocu = []
+count_two = 0
+
+
+def more_events(val, file_nine):
+    count_occurrences = (val.iloc[0]['e'].astype(int) -
+                         val.iloc[0]['d'].astype(int)) + 1
+
+    count_two += count_occurrences
+
+    occurrences_found = int(open(path_files + file_nine, 'r').read()
+                            .count(val.iloc[0]['combined']))
+
+    difference = occurrences_found - count_occurrences
+
+    if difference != 0:
+        list_diff_ocu.append(val.iloc[0]['combined'] + ": "
+                             + str(difference))
 
 
 def open_files():
@@ -25,25 +45,48 @@ def open_files():
 
 
 def calculate(file_two, file_nine):
-    my_data = genfromtxt(path_files + file_two, usecols=(4, 5, 6, 8, 9),
-                         dtype=None, delimiter=',', skip_header=1)
+    folio_duplicate = []
 
-    list_diff_ocu = []
-    count_two = 0
-    for row in my_data:
-        if row[3] != 0 and row[4] != 0:
-            count_occurrences = (row[4] - row[3]) + 1
-            count_two += count_occurrences
+    my_data = pd.read_csv(path_files + file_two, decimal=",", skiprows=1,
+                          usecols=(4, 5, 6, 8, 9), names=["a", "b", "c", "d", "e"])
 
-            text_to_search = f"{row[0]},{row[1]},{(row[2].decode('utf-8'))}"
-            occurrences_found = int(
-                open(path_files + file_nine, 'r').read().count(text_to_search))
+    df_with_zeros = pd.DataFrame(my_data)
 
-            difference = occurrences_found - count_occurrences
+    df = pd.DataFrame()
 
-            if difference != 0:
-                list_diff_ocu.append(text_to_search + ": " + str(difference))
+    for i, row in df_with_zeros.iterrows():
+        if row.d != 0 and row.e != 0:
+            df = df.append(row)
 
+    df["combined"] = df["a"].astype(str) + "," \
+        + df["b"].astype(str) + "," + df["c"]
+
+    df_occur = pd.DataFrame()
+    df_occur['freq'] = df['combined'].value_counts()
+
+    for i, row in df_occur.iterrows():
+        # Para carriles que no tienen mas de dos folios de inicio en el archivo
+        if row.freq < 2:
+            val = df[df['combined'] == row.name]
+            # Logica para saber eventos de mas
+            more_events(val, file_nine)
+        else:
+            val = df[df['combined'] == row.name]
+            vals = []
+            for d, e in zip(val.d, val.e):
+                vals.append(e)
+                vals.append(d)
+
+            df1 = pd.DataFrame({'combined': vals})
+
+            df_occur1 = pd.DataFrame()
+            df_occur1['freq'] = df1['combined'].value_counts()
+
+            print(df_occur1)
+            # PENDIENTE: PREGUNTAMOS SI HAY OCURR MAYOR A 2, SI ES VERDAD ENTONCES MANDAMOS A LISTA DE DE FOLIOS
+            # SI NO, RECORREMOS UNA POR UNA LAS FILAS DE VAL
+
+    # Sacamos diferencia
     header_nine = ''
     with open(path_files + file_nine, 'r') as f:
         header_nine = f.readline()
@@ -101,3 +144,59 @@ if __name__ == '__main__':
     finally:
         print("\nPress Enter to continue ...")
         input()
+
+
+#    for index, row in df_occur.iterrows():
+#         if row.freq < 2:
+#             val = df[df['combined'] == row.name]
+#             if val.iloc[0]['e'].astype(int) != 0 and val.iloc[0]['d'].astype(int) != 0:
+#                 # Logica para saber eventos de mas
+#                 count_occurrences = (val.iloc[0]['e'].astype(
+#                     int) - val.iloc[0]['d'].astype(int)) + 1
+
+#                 count_two += count_occurrences
+
+#                 occurrences_found = int(open(path_files + file_nine, 'r').read()
+#                                         .count(row.name))
+
+#                 difference = occurrences_found - count_occurrences
+
+#                 if difference != 0:
+#                     list_diff_ocu.append(
+#                         row.name + ": " + str(difference))
+#         else:
+#             val = df[df['combined'] == row.name]
+#             val = val.reset_index(drop=True)
+
+#             val1 = pd.DataFrame()
+#             for idx, r in val.iterrows():
+#                 if r.e != 0 and r.d != 0:
+#                     val1 = val1.append(r)
+
+#             if len(val1) < 2:
+#                 # Logica para saber eventos de mas
+#                 count_occurrences = (val1.iloc[0]['e'].astype(
+#                     int) - val1.iloc[0]['d'].astype(int)) + 1
+
+#                 count_two += count_occurrences
+
+#                 occurrences_found = int(open(path_files + file_nine, 'r').read()
+#                                         .count(val1.iloc[0]['combined']))
+
+#                 difference = occurrences_found - count_occurrences
+
+#                 if difference != 0:
+#                     list_diff_ocu.append(
+#                         val1.iloc[0]['combined'] + ": " + str(difference))
+#             else:
+#                 vals = []
+#                 for d, e in zip(val.d, val.e):
+#                     vals.append(e)
+#                     vals.append(d)
+
+#                 df1 = pd.DataFrame({'combined': vals})
+
+#                 df_occur1 = pd.DataFrame()
+#                 df_occur1['freq'] = df1['combined'].value_counts()
+
+#                 print(df_occur1)
