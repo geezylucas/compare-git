@@ -43,8 +43,8 @@ def more_events(val, file_nine, lane_dupli=False):
 def open_files():
     global path_files
 
-    path_files = "/home/geezylucas/Documentos/Python3/floorfiles/"
-    # path_files = sys.argv[1] + '\\'
+    # path_files = "/home/geezylucas/Documentos/Python3/floorfiles/"
+    path_files = sys.argv[1] + '\\'
 
     list_files = [f for f in os.listdir(path_files)]
 
@@ -140,6 +140,9 @@ if __name__ == '__main__':
                     for p in list_diff:
                         print("\t" + str(p), end="\n")
 
+                list_diff_ocu = []
+                count_two = 0
+
             if len(files_5):
                 result, list_diff = calculate(next((f for f in files_5 if f.endswith('2A')), None),
                                               next((f for f in files_5 if f.endswith('9A')), None))
@@ -148,6 +151,9 @@ if __name__ == '__main__':
                     for p in list_diff:
                         print("\t" + p, end="\n")
 
+                list_diff_ocu = []
+                count_two = 0
+
             if len(files_6):
                 result, list_diff = calculate(next((f for f in files_6 if f.endswith('2A')), None),
                                               next((f for f in files_6 if f.endswith('9A')), None))
@@ -155,6 +161,9 @@ if __name__ == '__main__':
                 if result != 0:
                     for p in list_diff:
                         print("\t" + p, end="\n")
+
+                list_diff_ocu = []
+                count_two = 0
 
     except BaseException:
         import sys
