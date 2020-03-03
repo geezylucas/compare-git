@@ -98,7 +98,7 @@ def calculate(file_two, file_nine):
             if len(folio_duplic):
                 df2 = val[(val['d'].astype(int) == folio_duplic[0]) |
                           (val['e'].astype(int) == folio_duplic[0])]
-                if len(df2):
+                if len(df2) > 1:
                     list_folios_duplic = df2[[
                         'combined', 'd', 'e']].values.tolist()
                 else:
