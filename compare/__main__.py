@@ -95,12 +95,14 @@ def calculate(file_two, file_nine):
             # PENDIENTE: PREGUNTAMOS SI HAY OCURR MAYOR A 2, SI ES VERDAD ENTONCES MANDAMOS A LISTA DE DE FOLIOS
             # SI NO, RECORREMOS UNA POR UNA LAS FILAS DE VAL Y SI NO, SUMAMOS Y BUSCAMOS
 
-            if len(folio_duplic) > 1:
+            if len(folio_duplic):
                 df2 = val[(val['d'].astype(int) == folio_duplic[0]) |
                           (val['e'].astype(int) == folio_duplic[0])]
-                if len(df2) > 1:
+                if len(df2):
                     list_folios_duplic = df2[[
                         'combined', 'd', 'e']].values.tolist()
+                else:
+                    more_events(val, file_nine, True)
             else:
                 more_events(val, file_nine, True)
 
@@ -139,7 +141,7 @@ if __name__ == '__main__':
                 print(result)
                 if result != 0:
                     for p in list_diff:
-                        print("\t" + str(p), end="\n")
+                        print(f"\t{p}", end="\n")
 
                 list_diff_ocu = []
                 count_two = 0
@@ -150,7 +152,7 @@ if __name__ == '__main__':
                 print(result)
                 if result != 0:
                     for p in list_diff:
-                        print("\t" + p, end="\n")
+                        print(f"\t{p}", end="\n")
 
                 list_diff_ocu = []
                 count_two = 0
@@ -161,7 +163,7 @@ if __name__ == '__main__':
                 print(result)
                 if result != 0:
                     for p in list_diff:
-                        print("\t" + p, end="\n")
+                        print(f"\t{p}", end="\n")
 
                 list_diff_ocu = []
                 count_two = 0
