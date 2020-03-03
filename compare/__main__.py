@@ -43,8 +43,8 @@ def more_events(val, file_nine, lane_dupli=False):
 def open_files():
     global path_files
 
-    # path_files = "/home/geezylucas/Documentos/Python3/floorfiles/"
-    path_files = sys.argv[1] + '\\'
+    path_files = "/home/geezylucas/Documentos/Python3/floorfiles/"
+    #path_files = sys.argv[1] + '\\'
 
     list_files = [f for f in os.listdir(path_files)]
 
@@ -94,12 +94,13 @@ def calculate(file_two, file_nine):
 
             # PENDIENTE: PREGUNTAMOS SI HAY OCURR MAYOR A 2, SI ES VERDAD ENTONCES MANDAMOS A LISTA DE DE FOLIOS
             # SI NO, RECORREMOS UNA POR UNA LAS FILAS DE VAL Y SI NO, SUMAMOS Y BUSCAMOS
-            df2 = val[(val['d'].astype(int) == folio_duplic[0]) |
-                      (val['e'].astype(int) == folio_duplic[0])]
 
-            if len(df2) > 1:
-                list_folios_duplic = df2[[
-                    'combined', 'd', 'e']].values.tolist()
+            if len(folio_duplic) > 1:
+                df2 = val[(val['d'].astype(int) == folio_duplic[0]) |
+                          (val['e'].astype(int) == folio_duplic[0])]
+                if len(df2) > 1:
+                    list_folios_duplic = df2[[
+                        'combined', 'd', 'e']].values.tolist()
             else:
                 more_events(val, file_nine, True)
 
