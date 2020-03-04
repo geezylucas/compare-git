@@ -43,8 +43,8 @@ def more_events(val, file_nine, lane_dupli=False):
 def open_files():
     global path_files
 
-    path_files = "/home/geezylucas/Documentos/Python3/floorfiles/"
-    #path_files = sys.argv[1] + '\\'
+    #path_files = "/home/geezylucas/Documentos/Python3/floorfiles/"
+    path_files = sys.argv[1] + '\\'
 
     list_files = [f for f in os.listdir(path_files)]
 
